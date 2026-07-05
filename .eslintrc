@@ -1,0 +1,12 @@
+{
+    "extends": ["next", "prettier", "plugin:tailwindcss/recommended"],
+    "rules": {
+        "import/prefer-default-export": "off",
+        "no-html-link-for-pages": "off",
+        "no-console": "off",
+        "tailwindcss/no-custom-classname": "off",
+        "@next/next/no-img-element": "off",
+        "no-var": "off",
+        "tailwindcss/migration-from-tailwind-2": "off"
+    }
+}
