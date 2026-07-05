@@ -114,7 +114,7 @@ export function GameCore({
         perlinMap.wrapT = RepeatWrapping
         perlinMap.colorSpace = SRGBColorSpace
 
-        const reflection = reflector({ resolutionScale: 0.5 })
+        const reflection = reflector({ resolutionScale: 0.333 })
         reflection.target.rotateX(-Math.PI / 2)
         sceneAPI.o3d.add(reflection.target)
 
