@@ -126,12 +126,12 @@ export function GameCore({
 
         const roughness = roughnessTex.r.saturate().abs()
 
-        floorMaterial.roughnessNode = roughnessTex.normalize()
+        floorMaterial.roughnessNode = float(0.0)
 
         floorMaterial.emissiveNode = Fn(() => {
             const dirtyReflection = textureBicubic(reflection, float(roughness))
 
-            return vec4(dirtyReflection.rgb.mul(0.5).mul(roughness), 1.0)
+            return vec4(dirtyReflection.rgb.mul(0.5), 1.0)
         })()
 
         sceneAPI?.o3d.traverse((it: any) => {
