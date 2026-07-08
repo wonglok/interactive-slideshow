@@ -104,17 +104,7 @@ export function GameCore({
             return
         }
 
-        const textureLoader = new TextureLoader()
-
-        const textureURL = `/assets/texture/rgb-256x256.png`
-
-        const perlinMap = textureLoader.load(textureURL)
-
-        perlinMap.wrapS = RepeatWrapping
-        perlinMap.wrapT = RepeatWrapping
-        perlinMap.colorSpace = SRGBColorSpace
-
-        const reflection = reflector({ resolutionScale: 0.333 })
+        const reflection = reflector({ resolutionScale: 0.25 })
         reflection.target.rotateX(-Math.PI / 2)
         sceneAPI.o3d.add(reflection.target)
 
@@ -122,26 +112,36 @@ export function GameCore({
 
         floorMaterial.transparent = false
 
-        const roughnessTex = texture(perlinMap, uv().mul(5)).normalize()
+        // const roughnessTex = texture(perlinMap, uv()).normalize()
 
-        const roughness = roughnessTex.r.saturate().abs()
+        floorMaterial.colorNode = Fn(() => {
+            const dirtyReflection = textureBicubic(reflection, float(0.5))
+            return vec4(dirtyReflection.rgb.mul(1.0), 1.0)
+        })()
 
-        floorMaterial.roughnessNode = float(0.0)
+        floorMaterial.roughnessNode = Fn(() => {
+            const textureLoader = new TextureLoader()
 
-        floorMaterial.emissiveNode = Fn(() => {
-            const dirtyReflection = textureBicubic(reflection, float(roughness))
+            const textureURL = `/assets/texture/rgb-256x256.png`
 
-            return vec4(dirtyReflection.rgb.mul(0.5), 1.0)
+            const perlinMap = textureLoader.load(textureURL)
+
+            perlinMap.wrapS = RepeatWrapping
+            perlinMap.wrapT = RepeatWrapping
+            perlinMap.colorSpace = SRGBColorSpace
+
+            return float(
+                float(0)
+                    .add(texture(perlinMap, uv().mul(5)).g)
+                    .add(texture(perlinMap, uv().mul(5)).r)
+                    .add(texture(perlinMap, uv().mul(5)).b),
+            ).div(3)
         })()
 
         sceneAPI?.o3d.traverse((it: any) => {
-            //
-
             if (it.name === 'inner') {
                 it.material = floorMaterial
             }
-
-            //
         })
 
         // annotateGLTFWithHashes({ scene: sceneAPI.o3d })
@@ -153,7 +153,7 @@ export function GameCore({
         })
 
         return () => {
-            reflection.target.removeFromParent()
+            // reflection.target.removeFromParent()
         }
     }, [sceneAPI])
 

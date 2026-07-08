@@ -108,10 +108,10 @@ export class SunlightObject extends Object3D {
         super()
 
         const applyBackground = (tex: Texture) => {
-            scene.environmentNode = texture(tex, uv()).mul(0.1)
+            scene.environmentNode = texture(tex, uv()).mul(1.0)
 
             scene.backgroundNode = texture(tex, uv())
-            scene.backgroundIntensity = 0.5
+            scene.backgroundIntensity = 0.3
         }
 
         this.loadHDR = (url = `/hdr/poly_haven_studio_1k.hdr`) => {
@@ -144,7 +144,7 @@ export class SunlightObject extends Object3D {
         this.add(this.sunLight.target)
 
         this.sunLight.castShadow = true
-        this.sunLight.shadow.camera.near = 0
+        this.sunLight.shadow.camera.near = 1
         this.sunLight.shadow.camera.far = 150 * 2
 
         this.sunLight.shadow.camera.left = -35 * 10
@@ -152,13 +152,13 @@ export class SunlightObject extends Object3D {
         this.sunLight.shadow.camera.bottom = -35 * 10
         this.sunLight.shadow.camera.top = 35 * 10
 
-        this.sunLight.shadow.mapSize.width = 2048
-        this.sunLight.shadow.mapSize.height = 2048
+        this.sunLight.shadow.mapSize.width = 1024
+        this.sunLight.shadow.mapSize.height = 1024
         this.sunLight.shadow.radius = 1
         this.sunLight.shadow.bias = -0.00035
 
-        this.sunLight.shadow.intensity = 2.0
-        this.sunLight.intensity = 2.0
+        this.sunLight.shadow.intensity = 1
+        this.sunLight.intensity = 1.0
 
         this.lastMotion = 0
 
@@ -306,6 +306,8 @@ export function EffectsSSGI() {
         const sceneNormal = sample((uv) => {
             return colorToDirection(scenePassNormal.sample(uv))
         })
+
+        //
 
         // gi
         const giPass = ssgi(scenePassColor, scenePassDepth, sceneNormal, camera)
